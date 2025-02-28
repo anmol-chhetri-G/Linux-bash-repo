@@ -1,1 +1,1 @@
-# Simple-Network-Monitoring
+# MINI PROJECTS
