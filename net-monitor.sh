@@ -1,23 +1,26 @@
 #!/bin/bash
 
 echo "Script started"
-#server="" suggeted using array
 
-#User input server name
-	echo "Enter server addresses seperated by spaces: "
-	read -a servers
-#servers=("google.com" "invalid.website" "bing.com")
+log_file="log.csv"
+
+echo "Timestamp, Server, Status, Response Time" > "$log_file"
+
+# User input server names
+echo "Enter server addresses separated by spaces: "
+read -a servers
 
 for server in "${servers[@]}"; do
-	#Get the starting time
-start_time=$(date +%s%3N)
+    if ping_output=$(ping -c 1 "$server" 2>/dev/null); then
+        # Extract response time using awk
+        response_time=$(echo "$ping_output" | awk -F'time=' '/time=/ {print $2}' | awk '{print $1}')
+        
+        # If response_time is empty, set it to "N/A"
+        [[ -z "$response_time" ]] && response_time="N/A"
 
-	if ping -c 1 -q $server &> /dev/null; then
-end_time=$(date +%s%3N)
-
-response_time=$((end_time - start_time))
-	echo "$(date '+%Y-%m-%d %H:%M:%S'),$server,UP, Response Time: ${response_time}ms"
-else
-	echo "$(date '+%Y %m %d %H:%M:%S'),$server,Down"
-fi
+        echo "$(date '+%Y-%m-%d %H:%M:%S'), $server, UP, ${response_time}ms" >> "$log_file"
+    else
+        echo "$(date '+%Y-%m-%d %H:%M:%S'), $server, Down" >> "$log_file"
+    fi
 done
+echo "Script Completed. Results saved to $log_file"
