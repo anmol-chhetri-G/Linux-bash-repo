@@ -10,11 +10,3 @@ for server in "${servers[@]}"; do
 		echo "$(date '+%Y %m %d %H:%M:%S') | $server | Down"
 	fi
 done
-
-#ping -c 5 $server #improvement suggested by gpt -q
-#if ping -c 1 -q $server2 &> /dev/null; then
-#	echo "$(date) $server2 is UP"
-#else 
-#	echo "$(date) $server2 is DOWN"
-#fi
-
